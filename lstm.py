@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 class LSTM_CLASS(nn.Module):
     def __init__(self,input_dim,output_dim,n_layers):
@@ -15,12 +16,16 @@ class LSTM_CLASS(nn.Module):
 
         self.first_cn = torch.randn(self.n_layers, 1, self.output_dim)
 
+        self.time_step_increment = torch.nn.Parameter(torch.tensor(0.001))
+
+
     def forward(self,sequence):
         batch_size = sequence.shape[1]
 
         hidden = (self.first_hidden.repeat(1,batch_size,1),self.first_cn.repeat(1,batch_size,1))
 
         out,hidden = self.lstm(sequence,hidden)
+
         return out,hidden
 
 
